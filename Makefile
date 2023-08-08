@@ -30,6 +30,15 @@ update-deps:
 files:
 	make -C app files
 
+test:
+	gradle test
+
+start:
+	gradle run
+
+stage:
+	gradle stage
+
 build-run: build run
 
 .PHONY: build

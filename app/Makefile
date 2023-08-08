@@ -25,11 +25,8 @@ lint:
 update-deps:
 	./gradlew useLatestVersions
 
-helpMe:
-	./build/install/app/bin/app -h
-
-files:
-	./build/install/app/bin/app src/test/resources/file11.yml src/test/resources/file22.yml
+stage:
+	gradle stage
 
 .PHONY: build
 

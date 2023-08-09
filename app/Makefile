@@ -26,7 +26,7 @@ update-deps:
 	./gradlew useLatestVersions
 
 stage:
-	gradle stage
+	./gradlew stage
 
 .PHONY: build
 

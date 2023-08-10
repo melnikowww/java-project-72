@@ -51,7 +51,7 @@ test {
 }
 
 compileJava {
-    options.release = 17
+    options.release = 19
 }
 
 jacoco {
@@ -60,7 +60,7 @@ jacoco {
 }
 
 checkstyle {
-    toolVersion '9.2.1'
+    toolVersion '10.12.1'
     configFile = rootProject.file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
 

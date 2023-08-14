@@ -1,9 +1,10 @@
 plugins {
-    id 'checkstyle'
     id 'application'
-    id 'jacoco'
+    id 'checkstyle'
     id 'com.adarshr.test-logger' version '3.2.0'
-    id 'io.ebean' version '13.6.5'
+    id 'com.github.ben-manes.versions' version '0.42.0'
+    id 'io.ebean' version '13.17.4'
+    id 'jacoco'
 }
 
 group 'hexlet.code'
@@ -51,9 +52,9 @@ test {
     finalizedBy jacocoTestReport
 }
 
-compileJava {
-    options.release = 20
-}
+//compileJava {
+//    options.release = 20
+//}
 
 java {
     toolchain {
@@ -62,7 +63,7 @@ java {
 }
 
 jacoco {
-    toolVersion = "0.8.8"
+    toolVersion = "0.8.10"
     reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
 }
 

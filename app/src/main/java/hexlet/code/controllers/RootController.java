@@ -9,6 +9,6 @@ public class RootController {
     private static final Logger LOGGER = LoggerFactory.getLogger(RootController.class);
     public static Handler welcome = ctx -> {
         LOGGER.info("Страница загружена");
-        ctx.render("index.html");
+        ctx.render("templates/index.html");
     };
 }

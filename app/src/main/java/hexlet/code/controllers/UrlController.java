@@ -10,7 +10,17 @@ import java.net.URL;
 
 public final class UrlController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RootController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UrlController.class);
+
+    public static Handler listUrls = ctx -> {
+
+    };
+
+    public static Handler newUrl = ctx -> {
+        Url url = new Url();
+        ctx.attribute("url", url);
+        ctx.render("mainPage.html");
+    };
 
     public static Handler createUrl = ctx -> {
         String url = ctx.formParam("url");
@@ -18,24 +28,36 @@ public final class UrlController {
         try {
             String protocol = url1.getProtocol();
             String file = url1.getFile();
-            int port = url1.getPort();
-            String stringPort = String.valueOf(port);
-            if (port == -1) {
-                stringPort = "";
+            String port = String.valueOf(url1.getPort());
+
+            if (port.equals("-1")) {
+                port = "";
             }
 
-            url = protocol + ":/" + file + ":" + stringPort;
+            url = protocol + ":/" + file + ":" + port;
 
-            Url search = new QUrl()
-                .findOne;
+            int existOfUrl = new QUrl()
+                .name.eq(url)
+                .findCount();
 
-            Url newUrl = new Url(url);
-
-
-
-            newUrl.save();
+            if (existOfUrl == 0) {
+                Url newUrl = new Url(url);
+                newUrl.save();
+                ctx.sessionAttribute("flash", "Страница успешно добавлена");
+                ctx.sessionAttribute("flash-type", "success");
+                LOGGER.info("Страница успешно добавлена");
+                ctx.render("urlsList.html");
+            } else {
+                ctx.sessionAttribute("flash", "Страница уже существует");
+                ctx.sessionAttribute("flash-type", "success");
+                LOGGER.info("Страница уже существует");
+                ctx.render("urlsList.html");
+            }
         } catch (Exception exception) {
+            LOGGER.info("Ошибка при парсинге");
             ctx.sessionAttribute("flash", "Некорректный URL");
+            ctx.sessionAttribute("flash-type", "danger");
+            ctx.render("mainPage.html");
         }
     };
 }

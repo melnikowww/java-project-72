@@ -1,12 +1,10 @@
 package hexlet.code;
 
 import hexlet.code.controllers.RootController;
+import hexlet.code.controllers.UrlController;
 import io.javalin.Javalin;
 import org.thymeleaf.TemplateEngine;
 import io.javalin.rendering.template.JavalinThymeleaf;
-//import static io.javalin.apibuilder.ApiBuilder.path;
-//import static io.javalin.apibuilder.ApiBuilder.get;
-//import static io.javalin.apibuilder.ApiBuilder.post;
 
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
@@ -18,7 +16,9 @@ public class App {
         return Integer.parseInt(port);
     }
     public static void addRoutes(Javalin app) {
-        app.get("/", RootController.welcome);
+        app.get("/", UrlController.newUrl);
+        app.get("/urls", UrlController.listUrls);
+        app.post("/urls", UrlController.createUrl);
     }
 
     public static Javalin getApp() {
@@ -35,7 +35,7 @@ public class App {
         TemplateEngine templateEngine = new TemplateEngine();
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
 
-//        templateResolver.setPrefix("/templates/");
+        templateResolver.setPrefix("/templates/");
         templateResolver.setCharacterEncoding("UTF-8");
 
         templateEngine.addTemplateResolver(templateResolver);

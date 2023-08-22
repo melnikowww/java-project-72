@@ -5,11 +5,10 @@ datasource:
     password: user
     url: "jdbc:h2:./database"
   production:
+    driver: org.postgresql.Driver
     username: ${JDBC_DATABASE_USERNAME}
     password: ${JDBC_DATABASE_PASSWORD}
     url: ${JDBC_DATABASE_URL}
-    driver: org.postgresql.Driver
-
 ebean:
   ddl:
     run: true

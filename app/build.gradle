@@ -1,17 +1,31 @@
 plugins {
     id 'application'
     id 'checkstyle'
-    id 'com.adarshr.test-logger' version '3.2.0'
-    id 'com.github.ben-manes.versions' version '0.42.0'
-    id 'io.ebean' version '13.6.5'
+    id 'com.adarshr.test-logger' version '3.0.0'
+    id 'com.github.ben-manes.versions' version '0.39.0'
+    id 'io.ebean' version '13.17.4'
     id 'jacoco'
 }
 
-group 'hexlet.code'
-version '1.0-SNAPSHOT'
+group = 'hexlet.code'
+version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+}
+
+compileJava {
+    options.release = 20
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(20)
+    }
+}
+
+application {
+    mainClass = 'hexlet.code.App'
 }
 
 dependencies {
@@ -29,48 +43,37 @@ dependencies {
 
     implementation 'io.ebean:ebean:13.15.0'
     implementation 'io.ebean:ebean-ddl-generator:13.15.0'
-    implementation 'io.ebean:ebean-querybean:12.15.1'
+    implementation 'io.ebean:ebean-querybean:13.15.0'
     implementation 'io.ebean:ebean-migration:13.7.0'
     implementation 'io.ebean:ebean-annotation:8.3'
-    testImplementation 'org.testng:testng:7.1.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
     annotationProcessor 'io.ebean:querybean-generator:13.15.0'
 
 
+    // NOTE: ebean-ddl-generator требует старые зависимости, которых нет в java 9 и выше
     implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.5'
     implementation 'javax.activation:activation:1.1.1'
 
+    implementation 'org.jsoup:jsoup:1.14.3'
+    implementation 'com.konghq:unirest-java:3.13.0'
+
+
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.2'
-    testImplementation 'org.assertj:assertj-core:3.24.0'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation 'io.ebean:ebean-test:13.15.0'
-    testImplementation 'com.konghq:unirest-java:3.14.2'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
 }
 
 test {
     useJUnitPlatform()
-    finalizedBy jacocoTestReport
 }
 
-//compileJava {
-//    options.release = 20
-//}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(20)
-    }
-}
-
-jacoco {
-    toolVersion = "0.8.10"
-    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
-}
-
-checkstyle {
-    toolVersion '10.12.1'
-    configFile = rootProject.file("${rootDir}/config/checkstyle/checkstyle.xml")
+testlogger {
+    showStandardStreams true
 }
 
 jacocoTestReport {
@@ -79,20 +82,16 @@ jacocoTestReport {
     }
 }
 
-testlogger {
-    showStandardStreams true
+checkstyle {
+    toolVersion '10.12.1'
 }
-
-application {
-    mainClass = 'hexlet.code.App'
-}
-
-task stage(dependsOn: ['clean', 'installDist'])
-installDist.mustRunAfter clean
 
 task generateMigrations(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'hexlet.code.MigrationGenerator'
 }
+
+task stage(dependsOn: ['clean', 'installDist'])
+installDist.mustRunAfter clean
 
 sourceSets.main.java.srcDirs = ['src/main/java', 'build/generated/sources/annotationProcessor/java/main']

@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -24,7 +23,7 @@ public class AppTest {
         app = App.getApp();
         app.start();
         int port = app.port();
-        baseUrl = "http://localhost:" + port;
+        baseUrl = "http://localhost:8080";
     }
 
     @AfterAll

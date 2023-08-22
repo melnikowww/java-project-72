@@ -28,45 +28,61 @@
 
     <div
         th:if="${session.flash}"
-        th:class="'rounded-0 m-0 alert alert-dismissible fade show alert-' + ${ctx.consumeSessionAttribute('flash-type')}"
+        class="rounded-0 m-0 alert alert-dismissible fade show alert-' + ${ctx.consumeSessionAttribute('flash-type')}"
         role="alert">
         <p class="m-0"
-        th:text="${ctx.consumeSessionAttribute('flash')}"></p>
+           th:text="${ctx.consumeSessionAttribute('flash')}"></p>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
     <section>
         <div class="container-lg mt-5">
-            <h1>Сайты</h1>
+            <h1 th:text="'Сайт ' + ${name}"></h1>
+
+            <table class="table table-bordered table-hover mt-3">
+                <tbody>
+                <tr>
+                    <td>ID</td>
+                    <td th:text="${id}"></td>
+                </tr>
+                <tr>
+                    <td>Имя</td>
+                    <td th:text="${name}"></td>
+                </tr>
+                <tr>
+                    <td>Дата создания</td>
+                    <td th:text="${createdAt}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h2 class="mt-5">Проверки</h2>
+            <form method="post" action="/urls/1/checks">
+                <button type="submit" class="btn btn-primary">Запустить проверку</button>
+            </form>
 
             <table class="table table-bordered table-hover mt-3">
                 <thead>
-                <tr>
-                    <th class="col-1">ID</th>
-                    <th>Имя</th>
-                    <th class="col-2">Последняя проверка</th>
+                <tr><th class="col-1">ID</th>
                     <th class="col-1">Код ответа</th>
-                </tr>
-                </thead>
-
+                    <th>title</th>
+                    <th>h1</th>
+                    <th>description</th>
+                    <th class="col-2">Дата проверки</th>
+                </tr></thead>
                 <tbody>
-                <tr th:each="url : ${urls}" th:object="${Url}">
-
-                    <td th:text="${url.id}"></td>
-
-                    <td>
-                        <a th:text="${url.name}" th:href="@{/urls/{id}(id=${url.id})}"></a>
-                    </td>
-
+                <tr>
                     <td></td>
                     <td></td>
-
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 </tbody>
-
             </table>
         </div>
     </section>
 </main>
 </body>
-</html>>
+</html>

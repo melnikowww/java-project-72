@@ -73,12 +73,13 @@ public final class UrlController {
     };
 
     public static Handler createUrl = ctx -> {
-        URL url = ctx.formParamAsClass("url", URL.class).getOrDefault(new URL(""));
+        String nameOfUrl = ctx.formParam("url");
+        URL requestUrl = new URL(nameOfUrl);
 
         try {
-            String protocol = url.getProtocol() + "://";
-            String file = url.getHost();
-            String port = ":" + url.getPort();
+            String protocol = requestUrl.getProtocol() + "://";
+            String file = requestUrl.getHost();
+            String port = ":" + requestUrl.getPort();
 
             if (port.equals(":-1")) {
                 port = "";

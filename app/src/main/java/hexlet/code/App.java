@@ -36,10 +36,10 @@ public class App {
                 config.plugins.enableDevLogging();
             }
             JavalinThymeleaf.init(getTemplateEngine());
-            });
+        });
 
-            addRoutes(app);
-            app.before(ctx -> ctx.attribute("ctx", ctx));
+        addRoutes(app);
+        app.before(ctx -> ctx.attribute("ctx", ctx));
         return app;
     }
 

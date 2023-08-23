@@ -73,26 +73,26 @@ public final class UrlController {
     };
 
     public static Handler createUrl = ctx -> {
-        String url = ctx.formParam("url");
-        URL url1 = new URL(url);
+        URL url = ctx.formParamAsClass("url", URL.class).getOrDefault(new URL(""));
+
         try {
-            String protocol = url1.getProtocol() + "://";
-            String file = url1.getHost();
-            String port = ":" + url1.getPort();
+            String protocol = url.getProtocol() + "://";
+            String file = url.getHost();
+            String port = ":" + url.getPort();
 
             if (port.equals(":-1")) {
                 port = "";
             }
 
-            url = protocol + file + port;
+            String name = protocol + file + port;
 
             int existOfUrl = new QUrl()
-                .name.eq(url)
+                .name.eq(name)
                 .findCount();
 
             if (existOfUrl == 0) {
-                Url newUrl = new Url(url);
-                newUrl.save();
+                Url url1 = new Url(name);
+                url1.save();
                 ctx.sessionAttribute("flash", "Страница успешно добавлена");
                 ctx.sessionAttribute("flash-type", "success");
                 LOGGER.info("Страница успешно добавлена");

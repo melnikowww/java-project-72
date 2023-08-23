@@ -96,3 +96,6 @@ task stage(dependsOn: ['clean', 'installDist'])
 installDist.mustRunAfter clean
 
 sourceSets.main.java.srcDirs = ['src/main/java', 'build/generated/sources/annotationProcessor/java/main']
+
+checkstyleMain.source = "src/main/java"
+checkstyleTest.source = "src/test/java"

@@ -83,6 +83,13 @@ jacocoTestReport {
     }
 }
 
+test {
+    finalizedBy jacocoTestReport
+}
+jacocoTestReport {
+    dependsOn test
+}
+
 checkstyle {
     toolVersion '10.12.1'
 }

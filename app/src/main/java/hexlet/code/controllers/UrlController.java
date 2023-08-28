@@ -1,15 +1,21 @@
 package hexlet.code.controllers;
 
 import hexlet.code.domain.Url;
+import hexlet.code.domain.UrlCheck;
 import hexlet.code.domain.query.QUrl;
 import io.ebean.PagedList;
 import io.javalin.http.Handler;
 import io.javalin.http.NotFoundResponse;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,6 +65,10 @@ public final class UrlController {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         String createdAt = simpleDateFormat.format(Date.from(url.getCreatedAt()));
+
+        if (!url.getUrlChecks().isEmpty()) {
+            ctx.attribute("urlChecks", url.getUrlChecks());
+        }
 
         ctx.attribute("id", id);
         ctx.attribute("name", url.getName());
@@ -110,5 +120,52 @@ public final class UrlController {
             ctx.sessionAttribute("flash-type", "danger");
             ctx.render("mainPage.html");
         }
+    };
+
+    public static Handler makeCheck = ctx -> {
+        Long id = ctx.pathParamAsClass("id", Long.class).getOrDefault(1L);
+
+        Url url = new QUrl()
+            .id.equalTo(id)
+            .findOne();
+
+        HttpResponse response = Unirest
+            .get(url.getName())
+            .asEmpty();
+
+        Document document = Jsoup.connect(url.getName())
+            .get();
+
+        UrlCheck urlCheck = new UrlCheck();
+
+        int statusCode = response.getStatus();
+        String title = document.title();
+        String description = document
+            .getElementsByAttributeValue("name", "description")
+            .attr("content");
+        String h1 = document.select("h1").first().text();
+
+        try {
+            urlCheck.setStatusCode(statusCode);
+            urlCheck.setTitle(title);
+            urlCheck.setDescription(description);
+            urlCheck.setH1(h1);
+            urlCheck.setUrl(url);
+            urlCheck.save();
+
+            url.setId(id);
+            List<UrlCheck> urlChecks = new ArrayList<>();
+            urlChecks.addAll(url.getUrlChecks());
+            urlChecks.add(urlCheck);
+            url.setUrlChecks(urlChecks);
+            url.save();
+            LOGGER.info("Страница проверена");
+            ctx.sessionAttribute("flash-type", "success");
+            ctx.sessionAttribute("flash", "Страница успешно проверена");
+        } catch (Exception exception) {
+
+        }
+
+        ctx.redirect("/urls/" + id);
     };
 }

@@ -51,16 +51,12 @@
 
                 <tbody>
                 <tr th:each="url : ${urls}" th:object="${Url}">
-
                     <td th:text="${url.id}"></td>
-
                     <td>
-                        <a th:text="${url.name}" th:href="@{/urls/{id}(id=${url.id})}"></a>
+                        <a th:text="${url.getName()}" th:href="@{/urls/{id}(id=${url.id})}"></a>
                     </td>
-
-                    <td></td>
-                    <td></td>
-
+                    <td th:text="${#temporals.format(url.getLastCreatedAt, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${url.getLastStatus()}"></td>
                 </tr>
                 </tbody>
 
@@ -69,4 +65,4 @@
     </section>
 </main>
 </body>
-</html>>
+</html>

@@ -63,6 +63,8 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation 'io.ebean:ebean-test:13.15.0'
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
+
+    implementation 'org.jsoup:jsoup:1.11.3';
 }
 
 tasks.withType(JavaCompile) {
@@ -105,4 +107,4 @@ installDist.mustRunAfter clean
 sourceSets.main.java.srcDirs = ['src/main/java', 'build/generated/sources/annotationProcessor/java/main']
 
 checkstyleMain.source = "src/main/java"
-checkstyleTest.source = "src/test/java"
+checkstyleTest.source =  "src/test/java"

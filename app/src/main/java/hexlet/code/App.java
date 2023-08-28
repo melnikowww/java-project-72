@@ -28,6 +28,7 @@ public class App {
         app.get("/urls", UrlController.listUrls);
         app.post("/urls", UrlController.createUrl);
         app.get("/urls/{id}", UrlController.showUrl);
+        app.post("/urls/{id}/checks", UrlController.makeCheck);
     }
 
     public static Javalin getApp() {

@@ -28,10 +28,10 @@
 
     <div
         th:if="${session.flash}"
-        class="rounded-0 m-0 alert alert-dismissible fade show alert-' + ${ctx.consumeSessionAttribute('flash-type')}"
+        th:class="'rounded-0 m-0 alert alert-dismissible fade show alert-' + ${ctx.consumeSessionAttribute('flash-type')}"
         role="alert">
         <p class="m-0"
-           th:text="${ctx.consumeSessionAttribute('flash')}"></p>
+        th:text="${ctx.consumeSessionAttribute('flash')}"></p>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
@@ -57,7 +57,7 @@
             </table>
 
             <h2 class="mt-5">Проверки</h2>
-            <form method="post" action="/urls/1/checks">
+            <form th:method="POST" th:action="@{/urls/} + ${id} + @{/checks}">
                 <button type="submit" class="btn btn-primary">Запустить проверку</button>
             </form>
 
@@ -69,15 +69,23 @@
                     <th>h1</th>
                     <th>description</th>
                     <th class="col-2">Дата проверки</th>
-                </tr></thead>
-                <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                </tr>
+                </thead>
+                <tbody
+                        style="
+                        box-sizing: border-box;
+                        width: 100%;
+                        white-space: nowrap;
+                        overflow:hidden;
+                        text-overflow:ellipsis;">
+
+                <tr th:each="urlCheck : ${urlChecks}" th:object="${UrlCheck}">
+                    <td th:text="${urlCheck.id}"></td>
+                    <td th:text="${urlCheck.statusCode}"></td>
+                    <td th:text="${urlCheck.title}"></td>
+                    <td th:text="${urlCheck.h1}"></td>
+                    <td th:text="${urlCheck.description}"></td>
+                    <td th:text="${#temporals.format(urlCheck.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
                 </tr>
                 </tbody>
             </table>

@@ -131,10 +131,9 @@ public final class UrlController {
 
         HttpResponse response = Unirest
             .get(url.getName())
-            .asEmpty();
+            .asString();
 
-        Document document = Jsoup.connect(url.getName())
-            .get();
+        Document document = Jsoup.parse(response.getBody().toString());
 
         UrlCheck urlCheck = new UrlCheck();
 
@@ -165,7 +164,6 @@ public final class UrlController {
         } catch (Exception exception) {
 
         }
-
         ctx.redirect("/urls/" + id);
     };
 }

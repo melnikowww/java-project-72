@@ -13,7 +13,6 @@ import okhttp3.mockwebserver.MockWebServer;
 import org.jsoup.Jsoup;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -42,11 +41,11 @@ public class AppTest {
         app.stop();
     }
 
-    @BeforeEach
-    void beforeEach() {
-//        database.script().run("/truncate.sql");
-        database.script().run("/seed-test.sql");
-    }
+//    @BeforeEach
+//    void static beforeEach() {
+////        database.script().run("/truncate.sql");
+//        database.script().run("/seed-test.sql");
+//    }
 
     @Test
     public void testNewUrl() {

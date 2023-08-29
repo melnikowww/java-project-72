@@ -48,69 +48,75 @@ public class AppTest {
         database.script().run("/seed-test.sql");
     }
 
-//    @Test
-//    public void testNewUrl() {
-//        HttpResponse<String> response = Unirest
-//            .get(baseUrl)
-//            .asString();
-//        assertThat(response.getStatus()).isEqualTo(200);
-//        assertThat(response.getBody()).contains("Анализатор страниц");
-//    }
-//
-//    @Test
-//    public void testCreateUrl() {
-//        String name = "https://ebean.io";
-//
-//        HttpResponse responsePost = Unirest
-//            .post(baseUrl + "/urls")
-//            .field("url", name)
-//            .asEmpty();
-//
-//        assertThat(responsePost.getStatus()).isEqualTo(302);
-//        assertThat(responsePost.getHeaders().getFirst("Location")).isEqualTo("/urls");
-//
-//        HttpResponse response = Unirest
-//            .get(baseUrl + "/urls")
-//                .asString();
-//
-//        assertThat(response.getStatus()).isEqualTo(200);
-//        assertThat(response.getBody().toString()).contains(name);
-//        assertThat(response.getBody().toString()).contains("Страница успешно добавлена");
-//
-//        Url actualUrl = new QUrl()
-//            .name.equalTo(name)
-//            .findOne();
-//
-//        assertThat(actualUrl).isNotNull();
-//        assertThat(actualUrl.getName()).isEqualTo(name);
-//    }
-//
-//    @Test
-//    public void testListUrls() {
-//        HttpResponse response = Unirest
-//            .get(baseUrl + "/urls")
-//            .asString();
-//
-//        assertThat(response.getStatus()).isEqualTo(200);
-//        assertThat(response.getBody().toString()).contains("Сайты");
-//    }
-//
-//    @Test
-//    public void testShowUrl() {
-//        String name = "https://ebean.io";
-//
-//        HttpResponse responsePost = Unirest
-//            .post(baseUrl + "/urls")
-//            .field("url", name)
-//            .asEmpty();
-//
-//        HttpResponse response = Unirest
-//            .get(baseUrl + "/urls/1")
-//            .asString();
-//
-//        assertThat(response.getStatus()).isEqualTo(200);
-//        assertThat(response.getBody().toString()).contains("Сайт " + name);
-//    }
+    @Test
+    public void testNewUrl() {
+        HttpResponse<String> response = Unirest
+            .get(baseUrl)
+            .asString();
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(response.getBody()).contains("Анализатор страниц");
+    }
+
+    @Test
+    public void testCreateUrl() {
+        String name = "https://ebean.io";
+
+        HttpResponse responsePost = Unirest
+            .post(baseUrl + "/urls")
+            .field("url", name)
+            .asEmpty();
+
+        assertThat(responsePost.getStatus()).isEqualTo(302);
+        assertThat(responsePost.getHeaders().getFirst("Location")).isEqualTo("/urls");
+
+        HttpResponse response = Unirest
+            .get(baseUrl + "/urls")
+                .asString();
+
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(response.getBody().toString()).contains(name);
+        assertThat(response.getBody().toString()).contains("Страница успешно добавлена");
+
+        Url actualUrl = new QUrl()
+            .name.equalTo(name)
+            .findOne();
+
+        assertThat(actualUrl).isNotNull();
+        assertThat(actualUrl.getName()).isEqualTo(name);
+    }
+
+    @Test
+    public void testListUrls() {
+        HttpResponse response = Unirest
+            .get(baseUrl + "/urls")
+            .asString();
+
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(response.getBody().toString()).contains("Сайты");
+    }
+
+    @Test
+    public void testShowUrl() {
+        String name = "https://ebean.io";
+
+        HttpResponse responsePost = Unirest
+            .post(baseUrl + "/urls")
+            .field("url", name)
+            .asEmpty();
+
+        Url url = new QUrl()
+            .name.equalTo(name)
+            .findOne();
+
+        long id = url.getId();
+
+        HttpResponse response = Unirest
+            .get(baseUrl + "/urls/" + id)
+            .asString();
+
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(response.getBody().toString()).contains("Сайт " + name);
+    }
 
     @Test
     public void testUrlCheck() throws IOException {

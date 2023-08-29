@@ -162,7 +162,7 @@ public final class UrlController {
             ctx.sessionAttribute("flash-type", "success");
             ctx.sessionAttribute("flash", "Страница успешно проверена");
         } catch (Exception exception) {
-
+            LOGGER.warn("Ошибка при добавлении данных в БД");
         }
         ctx.redirect("/urls/" + id);
     };

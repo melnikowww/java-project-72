@@ -1,13 +1,22 @@
 package hexlet.code;
 
 import hexlet.code.controllers.UrlController;
+import hexlet.code.repositories.BaseRepository;
 import io.javalin.Javalin;
-import org.thymeleaf.TemplateEngine;
 import io.javalin.rendering.template.JavalinThymeleaf;
-
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
+import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.sql.SQLException;
+import java.util.stream.Collectors;
 
 public class App {
     private static int getPort() {
@@ -31,7 +40,22 @@ public class App {
         app.post("/urls/{id}/checks", UrlController.makeCheck);
     }
 
-    public static Javalin getApp() {
+    public static Javalin getApp() throws IOException, SQLException {
+        var hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl("jdbc:h2:mem:project4");
+
+        var dataSource = new HikariDataSource(hikariConfig);
+        var schema = App.class.getClassLoader().getResource("schema.sql");
+        var file = new File(schema.getFile());
+        var sql = Files.lines(file.toPath())
+            .collect(Collectors.joining());
+
+        try (var connection = dataSource.getConnection();
+             var statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
+        BaseRepository.dataSource = dataSource;
+
         Javalin app = Javalin.create(config -> {
             if (!isProd()) {
                 config.plugins.enableDevLogging();
@@ -58,7 +82,7 @@ public class App {
         return templateEngine;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, IOException {
         Javalin app = getApp();
         app.start(getPort());
     }

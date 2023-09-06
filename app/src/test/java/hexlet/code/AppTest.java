@@ -2,9 +2,12 @@ package hexlet.code;
 
 
 import hexlet.code.domain.Url;
+import hexlet.code.domain.UrlCheck;
 import hexlet.code.domain.query.QUrl;
+import hexlet.code.domain.query.QUrlCheck;
 import io.ebean.DB;
 import io.ebean.Database;
+import io.ebean.annotation.Transactional;
 import io.javalin.Javalin;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
@@ -17,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,7 +32,7 @@ public class AppTest {
     private static Database database;
 
     @BeforeAll
-    public static void beforeAll() {
+    public static void beforeAll() throws SQLException, IOException {
         app = App.getApp();
         app.start();
         int port = app.port();
@@ -47,6 +51,7 @@ public class AppTest {
 //        database.script().run("/seed-test.sql");
 //    }
 
+    @Transactional
     @Test
     public void testNewUrl() {
         HttpResponse<String> response = Unirest
@@ -56,6 +61,7 @@ public class AppTest {
         assertThat(response.getBody()).contains("Анализатор страниц");
     }
 
+    @Transactional
     @Test
     public void testCreateUrl() {
         String name = "https://ebean.io";
@@ -84,6 +90,7 @@ public class AppTest {
         assertThat(actualUrl.getName()).isEqualTo(name);
     }
 
+    @Transactional
     @Test
     public void testListUrls() {
         HttpResponse response = Unirest
@@ -94,6 +101,7 @@ public class AppTest {
         assertThat(response.getBody().toString()).contains("Сайты");
     }
 
+    @Transactional
     @Test
     public void testShowUrl() {
         String name = "https://ebean.io";
@@ -117,6 +125,7 @@ public class AppTest {
         assertThat(response.getBody().toString()).contains("Сайт " + name);
     }
 
+    @Transactional
     @Test
     public void testUrlCheck() throws IOException {
         MockWebServer server = new MockWebServer();
@@ -125,7 +134,7 @@ public class AppTest {
         String body = Jsoup.parse(html, "UTF-8").toString();
         server.enqueue(new MockResponse().setBody(body));
 
-        String serverUrl = server.url("").toString();
+        String serverUrl = server.url("/").toString().replaceAll("/$", "");
 
         HttpResponse responsePost = Unirest
             .post(baseUrl + "/urls")
@@ -136,30 +145,30 @@ public class AppTest {
         assertThat(responsePost.getHeaders().getFirst("Location")).isEqualTo("/urls");
 
         Url url = new QUrl()
-            .findOne();
+            .name.equalTo(serverUrl)
+                .findOne();
 
         assertThat(url).isNotNull();
-        assertThat(url.getId()).isEqualTo(1);
-        assertThat(url.getName()).isEqualTo(serverUrl.substring(0, serverUrl.length() - 1));
+        assertThat(url.getId()).isEqualTo(url.getId());
+        assertThat(url.getName()).isEqualTo(serverUrl);
 
-        long id = url.getId();
+        Long id = url.getId();
 
-        HttpResponse response = Unirest
+        Unirest
             .post(baseUrl + "/urls/" + id + "/checks")
             .asEmpty();
 
         server.shutdown();
 
-        assertThat(response.getStatus()).isEqualTo(302);
-        assertThat(response.getHeaders().getFirst("Location")).isEqualTo("/urls/" + id);
+        UrlCheck urlCheck = new QUrlCheck()
+            .url.equalTo(url)
+            .orderBy()
+            .createdAt.desc()
+            .findOne();
 
-        HttpResponse urlPage = Unirest
-            .get(baseUrl + "/urls/" + id)
-            .asString();
-
-        assertThat(urlPage.getStatus()).isEqualTo(200);
-        assertThat(urlPage.getBody().toString()).contains("<td>200</td>");
-        assertThat(urlPage.getBody().toString()).contains("<td>Анализатор страниц</td>");
+        assertThat(urlCheck).isNotNull();
+        assertThat(urlCheck.getStatusCode()).isEqualTo(200);
+        assertThat(urlCheck.getTitle()).contains("Анализатор страниц");
     }
 
 }

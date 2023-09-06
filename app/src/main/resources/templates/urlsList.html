@@ -55,10 +55,13 @@
                     <td>
                         <a th:text="${url.getName()}" th:href="@{/urls/{id}(id=${url.id})}"></a>
                     </td>
-                    <td th:text="${#temporals.format(url.getLastCreatedAt, 'dd/MM/yyyy HH:mm')}"></td>
-                    <td th:text="${url.getLastStatus()}"></td>
+                    <td th:if="${urlChecks != null}" th:text="${urlChecks.containsKey(url.id) ? #dates.format(urlChecks.get(url.id).createdAt, 'dd/MM/yyyy HH:mm') : ''}"></td>
+                    <td th:if="${urlChecks != null}" th:text="${urlChecks.containsKey(url.id) ? urlChecks.get(url.id).getStatusCode() : ''}"></td>
+                    <td th:if="${urlChecks == null}"></td>
+                    <td th:if="${urlChecks == null}"></td>
                 </tr>
                 </tbody>
+
             </table>
         </div>
     </section>

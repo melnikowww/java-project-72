@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class App {
@@ -41,10 +42,30 @@ public class App {
     }
 
     public static Javalin getApp() throws IOException, SQLException {
-        var hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl("jdbc:h2:mem:project4");
+        Properties props = new Properties();
 
-        var dataSource = new HikariDataSource(hikariConfig);
+        String jdbcUrl;
+        String user;
+        String password;
+
+        if (isProd()) {
+            jdbcUrl = System.getenv("JDBC_DATABASE_URL");
+            user = System.getenv("JDBC_DATABASE_USERNAME");
+            password = System.getenv("JDBC_DATABASE_PASSWORD");
+        } else {
+            jdbcUrl = "jdbc:h2:mem:project4";
+            user = "user";
+            password = "user";
+        }
+
+        props.setProperty("dataSource.user", user);
+        props.setProperty("dataSource.password", password);
+        props.setProperty("dataSource.databaseName", "project4");
+        props.setProperty("jdbcUrl", jdbcUrl);
+
+        HikariConfig hikariConfig = new HikariConfig(props);
+        HikariDataSource dataSource = new HikariDataSource(hikariConfig);
+
         var schema = App.class.getClassLoader().getResource("schema.sql");
         var file = new File(schema.getFile());
         var sql = Files.lines(file.toPath())

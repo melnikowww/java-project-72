@@ -2,11 +2,15 @@ package hexlet.code.repositories;
 
 import hexlet.code.domain.UrlCheck;
 
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import java.sql.PreparedStatement;
 
 public class UrlCheckRepository extends BaseRepository {
     public static void save(UrlCheck urlCheck) throws SQLException {
@@ -57,11 +61,11 @@ public class UrlCheckRepository extends BaseRepository {
         }
     }
 
-    public static List<UrlCheck> getEntitiesById(Long url_id) throws SQLException {
+    public static List<UrlCheck> getEntitiesById(Long idOfUrl) throws SQLException {
         var sql = "SELECT * FROM url_checks WHERE url_id=? ORDER BY id DESC;";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, url_id);
+            stmt.setLong(1, idOfUrl);
             var resultSet = stmt.executeQuery();
             var result = new ArrayList<UrlCheck>();
             while (resultSet.next()) {

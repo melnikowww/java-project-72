@@ -3,11 +3,8 @@ package hexlet.code;
 
 import hexlet.code.domain.Url;
 import hexlet.code.domain.UrlCheck;
-import hexlet.code.domain.query.QUrl;
-import hexlet.code.domain.query.QUrlCheck;
-import io.ebean.DB;
-import io.ebean.Database;
-import io.ebean.annotation.Transactional;
+import hexlet.code.repositories.UrlCheckRepository;
+import hexlet.code.repositories.UrlRepository;
 import io.javalin.Javalin;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
@@ -29,7 +26,6 @@ public class AppTest {
 
     private static Javalin app;
     private static String baseUrl;
-    private static Database database;
 
     @BeforeAll
     public static void beforeAll() throws SQLException, IOException {
@@ -37,7 +33,6 @@ public class AppTest {
         app.start();
         int port = app.port();
         baseUrl = "http://localhost:8080";
-        database = DB.getDefault();
     }
 
     @AfterAll
@@ -51,7 +46,6 @@ public class AppTest {
 //        database.script().run("/seed-test.sql");
 //    }
 
-    @Transactional
     @Test
     public void testNewUrl() {
         HttpResponse<String> response = Unirest
@@ -61,9 +55,8 @@ public class AppTest {
         assertThat(response.getBody()).contains("Анализатор страниц");
     }
 
-    @Transactional
     @Test
-    public void testCreateUrl() {
+    public void testCreateUrl() throws SQLException {
         String name = "https://ebean.io";
 
         HttpResponse responsePost = Unirest
@@ -82,15 +75,12 @@ public class AppTest {
         assertThat(response.getBody().toString()).contains(name);
         assertThat(response.getBody().toString()).contains("Страница успешно добавлена");
 
-        Url actualUrl = new QUrl()
-            .name.equalTo(name)
-            .findOne();
+        Url actualUrl = UrlRepository.findByName(name).get();
 
         assertThat(actualUrl).isNotNull();
         assertThat(actualUrl.getName()).isEqualTo(name);
     }
 
-    @Transactional
     @Test
     public void testListUrls() {
         HttpResponse response = Unirest
@@ -101,9 +91,8 @@ public class AppTest {
         assertThat(response.getBody().toString()).contains("Сайты");
     }
 
-    @Transactional
     @Test
-    public void testShowUrl() {
+    public void testShowUrl() throws SQLException {
         String name = "https://ebean.io";
 
         HttpResponse responsePost = Unirest
@@ -111,9 +100,7 @@ public class AppTest {
             .field("url", name)
             .asEmpty();
 
-        Url url = new QUrl()
-            .name.equalTo(name)
-            .findOne();
+        Url url = UrlRepository.findByName(name).get();
 
         long id = url.getId();
 
@@ -125,9 +112,8 @@ public class AppTest {
         assertThat(response.getBody().toString()).contains("Сайт " + name);
     }
 
-    @Transactional
     @Test
-    public void testUrlCheck() throws IOException {
+    public void testUrlCheck() throws IOException, SQLException {
         MockWebServer server = new MockWebServer();
 
         File html = new File("src/test/resources/templates_test/urlCheckTest.html");
@@ -144,9 +130,7 @@ public class AppTest {
         assertThat(responsePost.getStatus()).isEqualTo(302);
         assertThat(responsePost.getHeaders().getFirst("Location")).isEqualTo("/urls");
 
-        Url url = new QUrl()
-            .name.equalTo(serverUrl)
-                .findOne();
+        Url url = UrlRepository.findByName(serverUrl).get();
 
         assertThat(url).isNotNull();
         assertThat(url.getId()).isEqualTo(url.getId());
@@ -160,11 +144,7 @@ public class AppTest {
 
         server.shutdown();
 
-        UrlCheck urlCheck = new QUrlCheck()
-            .url.equalTo(url)
-            .orderBy()
-            .createdAt.desc()
-            .findOne();
+        UrlCheck urlCheck = UrlCheckRepository.getEntitiesById(url.getId()).get(0);
 
         assertThat(urlCheck).isNotNull();
         assertThat(urlCheck.getStatusCode()).isEqualTo(200);

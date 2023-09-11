@@ -13,10 +13,6 @@ public final class Url {
     public Url(String name) {
         this.name = name;
     }
-
-    public Url(String name, String createdAt) {
-    }
-
     public long getId() {
         return this.id;
     }

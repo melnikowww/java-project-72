@@ -14,14 +14,16 @@ public final class UrlCheck {
     private Long urlId;
     private Timestamp createdAt;
 
-    public UrlCheck(int statusCode, String title, String h1, String description, Long urlId, Timestamp createdAt) {
+    public UrlCheck(int statusCode, String title, String h1, String description, Long urlId) {
+        this.statusCode = statusCode;
+        this.title = title;
+        this.h1 = h1;
+        this.description = description;
+        this.urlId = urlId;
     }
 
-    public UrlCheck() {
-
-    }
     public int getStatusCode() {
-        return statusCode;
+        return this.statusCode;
     }
 
     public void setStatusCode(int statusCode) {
@@ -29,7 +31,7 @@ public final class UrlCheck {
     }
 
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     public void setTitle(String title) {
@@ -37,7 +39,7 @@ public final class UrlCheck {
     }
 
     public String getH1() {
-        return h1;
+        return this.h1;
     }
 
     public void setH1(String h1) {
@@ -45,7 +47,7 @@ public final class UrlCheck {
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public void setDescription(String description) {
@@ -53,15 +55,15 @@ public final class UrlCheck {
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public Timestamp getCreatedAt() {
-        return createdAt;
+        return this.createdAt;
     }
 
     public Long getUrlId() {
-        return urlId;
+        return this.urlId;
     }
 
     public void setUrlId(Long urlId) {
@@ -70,5 +72,9 @@ public final class UrlCheck {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 }

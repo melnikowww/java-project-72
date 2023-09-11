@@ -39,28 +39,6 @@ public class UrlCheckRepository extends BaseRepository {
         }
     }
 
-//    public static Optional<UrlCheck> find(Long id) throws SQLException {
-//        var sql = "SELECT * FROM url_checks WHERE id = ?;";
-//        try (var conn = dataSource.getConnection();
-//             var stmt = conn.prepareStatement(sql)) {
-//            stmt.setLong(1, id);
-//            var resultSet = stmt.executeQuery();
-//            if (resultSet.next()) {
-//                int statusCode = resultSet.getInt("status_code");
-//                String title = resultSet.getString("title");
-//                String h1 = resultSet.getString("h1");
-//                String description = resultSet.getString("description");
-//                Long urlId = resultSet.getLong("url_id");
-//                Timestamp createdAt = resultSet.getTimestamp("created_at");
-//                UrlCheck urlCheck = new UrlCheck(statusCode, title, h1, description, urlId);
-//                urlCheck.setId(id);
-//                urlCheck.setCreatedAt(createdAt);
-//                return Optional.of(urlCheck);
-//            }
-//            return Optional.empty();
-//        }
-//    }
-
     public static List<UrlCheck> getEntitiesById(Long idOfUrl) throws SQLException {
         var sql = "SELECT * FROM url_checks WHERE url_id=? ORDER BY id DESC;";
         try (Connection conn = dataSource.getConnection();

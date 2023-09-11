@@ -64,25 +64,25 @@ public class UrlRepository extends BaseRepository {
         }
     }
 
-    public static List<Url> getEntities() throws SQLException {
-        var sql = "SELECT * FROM urls ORDER BY id";
-        try (var conn = dataSource.getConnection();
-             var stmt = conn.prepareStatement(sql)) {
-            var resultSet = stmt.executeQuery();
-            var result = new ArrayList<Url>();
-            while (resultSet.next()) {
-                var id = resultSet.getLong("id");
-                var name = resultSet.getString("name");
-                var createdAt = resultSet.getTimestamp("created_at");
-
-                Url url = new Url(name);
-                url.setId(id);
-                url.setCreatedAt(createdAt);
-                result.add(url);
-            }
-            return result;
-        }
-    }
+//    public static List<Url> getEntities() throws SQLException {
+//        var sql = "SELECT * FROM urls ORDER BY id";
+//        try (var conn = dataSource.getConnection();
+//             var stmt = conn.prepareStatement(sql)) {
+//            var resultSet = stmt.executeQuery();
+//            var result = new ArrayList<Url>();
+//            while (resultSet.next()) {
+//                var id = resultSet.getLong("id");
+//                var name = resultSet.getString("name");
+//                var createdAt = resultSet.getTimestamp("created_at");
+//
+//                Url url = new Url(name);
+//                url.setId(id);
+//                url.setCreatedAt(createdAt);
+//                result.add(url);
+//            }
+//            return result;
+//        }
+//    }
 
     public static List<Url> getEntities(int start, int stop) throws SQLException {
         var sql = "SELECT * FROM urls WHERE id > ? ORDER BY id LIMIT ?";

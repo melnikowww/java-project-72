@@ -14,8 +14,11 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -44,35 +47,38 @@ public class App {
     public static Javalin getApp() throws IOException, SQLException {
         Properties props = new Properties();
 
-        String jdbcUrl;
-        String user;
-        String password;
-
         if (isProd()) {
-            jdbcUrl = System.getenv("JDBC_DATABASE_URL");
-            user = System.getenv("JDBC_DATABASE_USERNAME");
-            password = System.getenv("JDBC_DATABASE_PASSWORD");
+//            jdbcUrl = System.getenv("JDBC_DATABASE_URL");
+//            user = System.getenv("JDBC_DATABASE_USERNAME");
+//            password = System.getenv("JDBC_DATABASE_PASSWORD");
+            props.setProperty("jdbcUrl", System.getenv("JDBC_DATABASE_URL"));
+            props.setProperty("dataSource.user", System.getenv("JDBC_DATABASE_USERNAME"));
+            props.setProperty("dataSource.password", System.getenv("JDBC_DATABASE_PASSWORD"));
         } else {
-            jdbcUrl = "jdbc:h2:mem:project4";
-            user = "user";
-            password = "user";
+//            jdbcUrl = "jdbc:h2:mem:project4";
+//            user = "user";
+//            password = "user";
+
+            props.setProperty("jdbcUrl", "jdbc:h2:mem:project4");
+            props.setProperty("dataSource.user", "user");
+            props.setProperty("dataSource.password", "user");
         }
 
-        props.setProperty("dataSource.user", user);
-        props.setProperty("dataSource.password", password);
-        props.setProperty("dataSource.databaseName", "project4");
-        props.setProperty("jdbcUrl", jdbcUrl);
+//        props.setProperty("dataSource.user", user);
+//        props.setProperty("dataSource.password", password);
+//        props.setProperty("dataSource.databaseName", "project4");
+//        props.setProperty("jdbcUrl", jdbcUrl);
 
         HikariConfig hikariConfig = new HikariConfig(props);
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 
-        var schema = App.class.getClassLoader().getResource("schema.sql");
-        var file = new File(schema.getFile());
-        var sql = Files.lines(file.toPath())
+        URL schema = App.class.getClassLoader().getResource("schema.sql");
+        File file = new File(schema.getFile());
+        String sql = Files.lines(file.toPath())
             .collect(Collectors.joining());
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.createStatement()) {
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement()) {
             statement.execute(sql);
         }
         BaseRepository.dataSource = dataSource;

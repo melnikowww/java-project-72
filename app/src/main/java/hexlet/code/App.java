@@ -61,7 +61,7 @@ public class App {
             props.setProperty("dataSource.password", "user");
         }
 
-        HikariConfig hikariConfig = new HikariConfig(props);
+        HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getDatabaseUrl());
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 

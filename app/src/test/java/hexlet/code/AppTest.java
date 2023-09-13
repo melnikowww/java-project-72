@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import static hexlet.code.repositories.BaseRepository.dataSource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -150,5 +151,4 @@ public class AppTest {
         assertThat(urlCheck.getStatusCode()).isEqualTo(200);
         assertThat(urlCheck.getTitle()).contains("Анализатор страниц");
     }
-
 }

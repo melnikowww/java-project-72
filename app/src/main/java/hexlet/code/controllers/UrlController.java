@@ -27,7 +27,7 @@ public final class UrlController {
 
     public static Handler listUrls = ctx -> {
         int page = ctx.queryParamAsClass("page", Integer.class).getOrDefault(1) - 1;
-        int rowsPerPage = 3;
+        int rowsPerPage = 7;
 
         List<Url> urls = UrlRepository
             .getEntities(page * rowsPerPage, page * rowsPerPage + rowsPerPage);

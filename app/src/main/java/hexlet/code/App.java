@@ -44,21 +44,26 @@ public class App {
         app.post("/urls/{id}/checks", UrlController.makeCheck);
     }
 
+    private static String getDatabaseUrl() {
+        return System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project");
+    }
+
     public static Javalin getApp() throws IOException, SQLException {
-        Properties props = new Properties();
+//        Properties props = new Properties();
 
-        if (isProd()) {
-            props.setProperty("jdbcUrl", System.getenv("JDBC_DATABASE_URL"));
-            props.setProperty("dataSource.user", System.getenv("JDBC_DATABASE_USERNAME"));
-            props.setProperty("dataSource.password", System.getenv("JDBC_DATABASE_PASSWORD"));
-            props.setProperty("dataSource.portNumber", "PORT");
-        } else {
-            props.setProperty("jdbcUrl", "jdbc:h2:mem:project4");
-            props.setProperty("dataSource.user", "user");
-            props.setProperty("dataSource.password", "user");
-        }
+//        if (isProd()) {
+//            props.setProperty("jdbcUrl", System.getenv("JDBC_DATABASE_URL"));
+//            props.setProperty("dataSource.user", System.getenv("JDBC_DATABASE_USERNAME"));
+//            props.setProperty("dataSource.password", System.getenv("JDBC_DATABASE_PASSWORD"));
+//            props.setProperty("dataSource.portNumber", "PORT");
+//        } else {
+//            props.setProperty("jdbcUrl", "jdbc:h2:mem:project4");
+//            props.setProperty("dataSource.user", "user");
+//            props.setProperty("dataSource.password", "user");
+//        }
 
-        HikariConfig hikariConfig = new HikariConfig(props);
+        HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl(getDatabaseUrl());
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 
         URL schema = App.class.getClassLoader().getResource("schema.sql");

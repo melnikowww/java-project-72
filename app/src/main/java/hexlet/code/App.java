@@ -62,6 +62,9 @@ public class App {
 //        }
 
         HikariConfig hikariConfig = new HikariConfig();
+        if (isProd()) {
+            hikariConfig.setDriverClassName("org.postgresql.ds.PGSimpleDataSource");
+        }
         hikariConfig.setJdbcUrl(getDatabaseUrl());
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 

@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class App {
@@ -48,23 +49,19 @@ public class App {
     }
 
     public static Javalin getApp() throws IOException, SQLException {
-//        Properties props = new Properties();
+        Properties props = new Properties();
+        props.setProperty("jdbcUrl", getDatabaseUrl());
 
-//        if (isProd()) {
-//            props.setProperty("jdbcUrl", System.getenv("JDBC_DATABASE_URL"));
-//            props.setProperty("dataSource.user", System.getenv("JDBC_DATABASE_USERNAME"));
-//            props.setProperty("dataSource.password", System.getenv("JDBC_DATABASE_PASSWORD"));
-//            props.setProperty("dataSource.portNumber", "PORT");
-//        } else {
-//            props.setProperty("jdbcUrl", "jdbc:h2:mem:project4");
-//            props.setProperty("dataSource.user", "user");
-//            props.setProperty("dataSource.password", "user");
-//        }
-
-        HikariConfig hikariConfig = new HikariConfig();
         if (isProd()) {
-            hikariConfig.setDriverClassName("org.postgresql.ds.PGSimpleDataSource");
+            props.setProperty("dataSource.user", System.getenv("JDBC_DATABASE_USERNAME"));
+            props.setProperty("dataSource.password", System.getenv("JDBC_DATABASE_PASSWORD"));
+            props.setProperty("dataSource.portNumber", System.getenv("PORT"));
+        } else {
+            props.setProperty("dataSource.user", "user");
+            props.setProperty("dataSource.password", "user");
         }
+
+        HikariConfig hikariConfig = new HikariConfig(props);
         hikariConfig.setJdbcUrl(getDatabaseUrl());
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 

@@ -49,20 +49,23 @@ public class App {
     }
 
     public static Javalin getApp() throws IOException, SQLException {
-        Properties props = new Properties();
-        props.setProperty("jdbcUrl", getDatabaseUrl());
-
-        if (isProd()) {
-            props.setProperty("dataSource.user", System.getenv("JDBC_DATABASE_USERNAME"));
-            props.setProperty("dataSource.password", System.getenv("JDBC_DATABASE_PASSWORD"));
-            props.setProperty("dataSource.portNumber", System.getenv("PORT"));
-        } else {
-            props.setProperty("dataSource.user", "user");
-            props.setProperty("dataSource.password", "user");
-        }
+//        Properties props = new Properties();
+//        props.setProperty("jdbcUrl", getDatabaseUrl());
+//
+//        if (isProd()) {
+//            props.setProperty("dataSource.user", System.getenv("JDBC_DATABASE_USERNAME"));
+//            props.setProperty("dataSource.password", System.getenv("JDBC_DATABASE_PASSWORD"));
+//            props.setProperty("dataSource.portNumber", System.getenv("PORT"));
+//        } else {
+//            props.setProperty("dataSource.user", "user");
+//            props.setProperty("dataSource.password", "user");
+//        }
 
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getDatabaseUrl());
+        hikariConfig.setUsername(System.getenv("JDBC_DATABASE_USERNAME"));
+        hikariConfig.setPassword(System.getenv("JDBC_DATABASE_PASSWORD"));
+
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 
         URL schema = App.class.getClassLoader().getResource("schema.sql");

@@ -68,7 +68,7 @@ public class App {
         URL schema = App.class.getClassLoader().getResource("schema.sql");
         File file = new File(schema.getFile());
         String sql = Files.lines(file.toPath())
-            .collect(Collectors.joining());
+            .collect(Collectors.joining("\n"));
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {

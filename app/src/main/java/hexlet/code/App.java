@@ -52,14 +52,14 @@ public class App {
         Properties props = new Properties();
         props.setProperty("jdbcUrl", getDatabaseUrl());
 
-        if (isProd()) {
-            props.setProperty("dataSource.user", System.getenv("JDBC_DATABASE_USERNAME"));
-            props.setProperty("dataSource.password", System.getenv("JDBC_DATABASE_PASSWORD"));
-            props.setProperty("dataSource.portNumber", System.getenv("PGPORT"));
-        } else {
-            props.setProperty("dataSource.user", "user");
-            props.setProperty("dataSource.password", "user");
-        }
+//        if (isProd()) {
+//            props.setProperty("dataSource.user", System.getenv("JDBC_DATABASE_USERNAME"));
+//            props.setProperty("dataSource.password", System.getenv("JDBC_DATABASE_PASSWORD"));
+//            props.setProperty("dataSource.portNumber", System.getenv("PGPORT"));
+//        } else {
+//            props.setProperty("dataSource.user", "user");
+//            props.setProperty("dataSource.password", "user");
+//        }
 
         HikariConfig hikariConfig = new HikariConfig(props);
 //        hikariConfig.setJdbcUrl(getDatabaseUrl());

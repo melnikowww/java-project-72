@@ -63,8 +63,8 @@ public class App {
 
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getDatabaseUrl());
-//        hikariConfig.setUsername(System.getenv("JDBC_DATABASE_USERNAME"));
-//        hikariConfig.setPassword(System.getenv("JDBC_DATABASE_PASSWORD"));
+        hikariConfig.setUsername(System.getenv("JDBC_DATABASE_USERNAME"));
+        hikariConfig.setPassword(System.getenv("JDBC_DATABASE_PASSWORD"));
 
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 

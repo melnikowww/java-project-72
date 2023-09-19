@@ -16,8 +16,12 @@
 * JDK 20
 * Gradle 8.2
 ### Сборка и запуск
-```make build```
+```
+make build
+
 \# Сборка проекта
 
-```make start```
+make start
+
 \# Локальный запуск
+```

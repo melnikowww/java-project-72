@@ -51,6 +51,8 @@ public class App {
     public static Javalin getApp() throws SQLException, IOException {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getDatabaseUrl());
+        hikariConfig.setUsername(System.getenv("JDBC_DATABASE_USER"));
+        hikariConfig.setPassword(System.getenv("JDBC_DATABASE_PASSWORD"));
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 
         String sql = getContentFromStream(getFileFromResourceAsStream("schema.sql"));

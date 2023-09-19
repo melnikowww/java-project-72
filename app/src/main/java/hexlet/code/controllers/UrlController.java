@@ -137,20 +137,18 @@ public final class UrlController {
 
             Document document = Jsoup.parse(response.getBody().toString());
 
+            String h1 = "";
             int statusCode = response.getStatus();
             String title = document.title();
-            String h1 = document.select("h1").first().text();
+            if (document.select("h1").first() != null) {
+                h1 = document.select("h1").first().text();
+            }
             String description = document
                 .getElementsByAttributeValue("name", "description")
                 .attr("content");
 
 
             UrlCheck urlCheck = new UrlCheck(statusCode, title, h1, description, id);
-//            urlCheck.setStatusCode(statusCode);
-//            urlCheck.setTitle(title);
-//            urlCheck.setDescription(description);
-//            urlCheck.setH1(h1);
-//            urlCheck.setUrlId(url.getId());
             UrlCheckRepository.save(urlCheck);
 
             LOGGER.info("Страница проверена");

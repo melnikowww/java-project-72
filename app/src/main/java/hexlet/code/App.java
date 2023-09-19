@@ -12,14 +12,14 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class App {
@@ -48,30 +48,12 @@ public class App {
         return System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project");
     }
 
-    public static Javalin getApp() throws IOException, SQLException {
-        Properties props = new Properties();
-//        props.setProperty("jdbcUrl", getDatabaseUrl());
-
-//        if (isProd()) {
-//            props.setProperty("dataSource.user", System.getenv("JDBC_DATABASE_USERNAME"));
-//            props.setProperty("dataSource.password", System.getenv("JDBC_DATABASE_PASSWORD"));
-//            props.setProperty("dataSource.portNumber", System.getenv("PGPORT"));
-//        } else {
-//            props.setProperty("dataSource.user", "user");
-//            props.setProperty("dataSource.password", "user");
-//        }
-
+    public static Javalin getApp() throws SQLException, IOException {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getDatabaseUrl());
-        hikariConfig.setUsername(System.getenv("JDBC_DATABASE_USERNAME"));
-        hikariConfig.setPassword(System.getenv("JDBC_DATABASE_PASSWORD"));
-
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 
-        URL schema = App.class.getClassLoader().getResource("schema.sql");
-        File file = new File(schema.getFile());
-        String sql = Files.lines(file.toPath())
-            .collect(Collectors.joining("\n"));
+        String sql = getContentFromStream(getFileFromResourceAsStream("schema.sql"));
 
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
@@ -110,4 +92,15 @@ public class App {
         app.start(getPort());
     }
 
+    private static InputStream getFileFromResourceAsStream(String fileName) {
+        ClassLoader classLoader = App.class.getClassLoader();
+        InputStream is = classLoader.getResourceAsStream(fileName);
+        return is;
+    }
+
+    private static String getContentFromStream(InputStream is) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+            return reader.lines().collect(Collectors.joining("\n"));
+        }
+    }
 }

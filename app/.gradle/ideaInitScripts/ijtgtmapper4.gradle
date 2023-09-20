@@ -1,5 +1,0 @@
-ext.pathMapper = [:]
-ext.pathMapper.put('//wsl\$/Ubuntu/home/melnikvv/.jdks/openjdk-20.0.2/bin/java', '/home/melnikvv/.jdks/openjdk-20.0.2/bin/java')
-ext.pathMapper.put('//wsl\$/Ubuntu/home/melnikvv/java-project-72/app', '/home/melnikvv/java-project-72/app')
-ext.pathMapper.put("<<target java executable path>>", '/home/melnikvv/.jdks/openjdk-20.0.2/bin/java')
-ext.mapPath = { path -> pathMapper.get(path) ?: path }

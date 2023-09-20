@@ -1,5 +1,6 @@
 package hexlet.code;
 
+import hexlet.code.controllers.RootController;
 import hexlet.code.controllers.UrlController;
 import hexlet.code.repositories.BaseRepository;
 import io.javalin.Javalin;
@@ -37,7 +38,7 @@ public class App {
     }
 
     public static void addRoutes(Javalin app) {
-        app.get("/", UrlController.newUrl);
+        app.get("/", RootController.welcome);
         app.get("/urls", UrlController.listUrls);
         app.post("/urls", UrlController.createUrl);
         app.get("/urls/{id}", UrlController.showUrl);

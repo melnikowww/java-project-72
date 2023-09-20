@@ -57,9 +57,9 @@ public final class UrlController {
     };
 
     public static Handler showUrl = ctx -> {
-        Long id = ctx.pathParamAsClass("id", Long.class).getOrDefault(1L);
+        Long urlId = ctx.pathParamAsClass("id", Long.class).getOrDefault(1L);
 
-        Url url = UrlRepository.findById(id)
+        Url url = UrlRepository.findById(urlId)
             .orElseThrow(NotFoundResponse::new);
 
         if (url == null) {
@@ -69,19 +69,13 @@ public final class UrlController {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         String createdAt = simpleDateFormat.format(url.getCreatedAt());
 
-        List<UrlCheck> urlChecks = UrlCheckRepository.getEntitiesById(id);
+        List<UrlCheck> urlChecks = UrlCheckRepository.getEntitiesById(urlId);
         ctx.attribute("urlChecks", urlChecks);
 
-        ctx.attribute("id", id);
+        ctx.attribute("id", urlId);
         ctx.attribute("name", url.getName());
         ctx.attribute("createdAt", createdAt);
         ctx.render("showUrl.html");
-    };
-
-    public static Handler newUrl = ctx -> {
-        Url url = new Url();
-        ctx.attribute("url", url);
-        ctx.render("mainPage.html");
     };
 
     public static Handler createUrl = ctx -> {
@@ -99,14 +93,14 @@ public final class UrlController {
         }
 
         String protocol = requestUrl.getProtocol() + "://";
-        String file = requestUrl.getHost();
+        String host = requestUrl.getHost();
         String port = ":" + requestUrl.getPort();
 
         if (port.equals(":-1")) {
             port = "";
         }
 
-        String name = protocol + file + port;
+        String name = protocol + host + port;
 
         boolean existOfUrl = UrlRepository.findByName(name).isPresent();
 

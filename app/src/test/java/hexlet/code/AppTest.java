@@ -6,6 +6,8 @@ import hexlet.code.domain.UrlCheck;
 import hexlet.code.repositories.UrlCheckRepository;
 import hexlet.code.repositories.UrlRepository;
 import io.javalin.Javalin;
+import io.javalin.http.NotFoundResponse;
+import javassist.NotFoundException;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import okhttp3.mockwebserver.MockResponse;
@@ -75,7 +77,7 @@ public class AppTest {
         assertThat(response.getBody().toString()).contains(name);
         assertThat(response.getBody().toString()).contains("Страница успешно добавлена");
 
-        Url actualUrl = UrlRepository.findByName(name).get();
+        Url actualUrl = UrlRepository.findByName(name).orElseThrow();
 
         assertThat(actualUrl).isNotNull();
         assertThat(actualUrl.getName()).isEqualTo(name);
@@ -100,7 +102,7 @@ public class AppTest {
             .field("url", name)
             .asEmpty();
 
-        Url url = UrlRepository.findByName(name).get();
+        Url url = UrlRepository.findByName(name).orElseThrow();
 
         long id = url.getId();
 
@@ -130,10 +132,9 @@ public class AppTest {
         assertThat(responsePost.getStatus()).isEqualTo(302);
         assertThat(responsePost.getHeaders().getFirst("Location")).isEqualTo("/urls");
 
-        Url url = UrlRepository.findByName(serverUrl).get();
+        Url url = UrlRepository.findByName(serverUrl).orElseThrow();
 
         assertThat(url).isNotNull();
-        assertThat(url.getId()).isEqualTo(url.getId());
         assertThat(url.getName()).isEqualTo(serverUrl);
 
         Long id = url.getId();
@@ -148,6 +149,8 @@ public class AppTest {
 
         assertThat(urlCheck).isNotNull();
         assertThat(urlCheck.getStatusCode()).isEqualTo(200);
-        assertThat(urlCheck.getTitle()).contains("Анализатор страниц");
+        assertThat(urlCheck.getTitle()).contains("Хекслет — онлайн-школа программирования, онлайн-обучение ИТ-профессиям");
+        assertThat(urlCheck.getH1()).contains("Лучшая школа");
+        assertThat(urlCheck.getDescription()).contains("Хекслет — лучшая школа программирования");
     }
 }

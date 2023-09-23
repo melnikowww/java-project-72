@@ -51,7 +51,7 @@
                 </tr>
                 <tr>
                     <td>Дата создания</td>
-                    <td th:text="${createdAt}"></td>
+                    <td th:text="${#dates.format(createdAt, 'dd/MM/yyyy HH:mm')}"></td>
                 </tr>
                 </tbody>
             </table>

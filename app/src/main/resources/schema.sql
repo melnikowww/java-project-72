@@ -13,7 +13,7 @@ CREATE TABLE url_checks (
     status_code INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     h1 VARCHAR(255) NOT NULL,
-    description VARCHAR(255) NOT NULL,
+    description LONGTEXT NOT NULL,
     url_id INT NOT NULL,
     created_at TIMESTAMP
 );

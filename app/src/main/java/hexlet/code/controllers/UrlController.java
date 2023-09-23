@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -62,19 +63,12 @@ public final class UrlController {
         Url url = UrlRepository.findById(urlId)
             .orElseThrow(NotFoundResponse::new);
 
-        if (url == null) {
-            throw new NotFoundResponse();
-        }
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        String createdAt = simpleDateFormat.format(url.getCreatedAt());
-
         List<UrlCheck> urlChecks = UrlCheckRepository.getEntitiesById(urlId);
         ctx.attribute("urlChecks", urlChecks);
 
         ctx.attribute("id", urlId);
         ctx.attribute("name", url.getName());
-        ctx.attribute("createdAt", createdAt);
+        ctx.attribute("createdAt", url.getCreatedAt());
         ctx.render("showUrl.html");
     };
 

@@ -6,8 +6,6 @@ import hexlet.code.domain.UrlCheck;
 import hexlet.code.repositories.UrlCheckRepository;
 import hexlet.code.repositories.UrlRepository;
 import io.javalin.Javalin;
-import io.javalin.http.NotFoundResponse;
-import javassist.NotFoundException;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import okhttp3.mockwebserver.MockResponse;
@@ -149,7 +147,8 @@ public class AppTest {
 
         assertThat(urlCheck).isNotNull();
         assertThat(urlCheck.getStatusCode()).isEqualTo(200);
-        assertThat(urlCheck.getTitle()).contains("Хекслет — онлайн-школа программирования, онлайн-обучение ИТ-профессиям");
+        assertThat(urlCheck.getTitle())
+            .contains("Хекслет — онлайн-школа программирования, онлайн-обучение ИТ-профессиям");
         assertThat(urlCheck.getH1()).contains("Лучшая школа");
         assertThat(urlCheck.getDescription()).contains("Хекслет — лучшая школа программирования");
     }
